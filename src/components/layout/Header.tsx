@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, Calendar, User, Search, ShoppingCart } from "lucide-react";
+import { Menu, X, Calendar, User, Search, ShoppingCart, Scissors, Sparkles, Brush, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AuthDialog from "@/components/auth/AuthDialog";
 import { useAuth } from "@/contexts/AuthContext";
