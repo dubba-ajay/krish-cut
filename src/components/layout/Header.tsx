@@ -147,10 +147,19 @@ const Header = () => {
             <button aria-label="Search" className="p-2 text-white" onClick={()=> setSearchOpen(true)}>
               <Search className="w-6 h-6" />
             </button>
-            <button aria-label="Bookings cart" className="relative p-2 text-white" onClick={()=> navigate('/checkout')}>
-              <ShoppingCart className="w-6 h-6" />
-              {cartCount > 0 && <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">{cartCount}</span>}
-            </button>
+            {(() => {
+              const path = location.pathname;
+              const svc = path.startsWith('/mens-hair') ? 'mens' : path.startsWith('/womens-beauty') ? 'womens' : path.startsWith('/nail-studios') ? 'nails' : path.startsWith('/makeup-artists') ? 'makeup' : 'default';
+              const Icon = svc === 'mens' ? Scissors : svc === 'womens' ? Sparkles : svc === 'nails' ? Brush : svc === 'makeup' ? Palette : ShoppingCart;
+              const color = svc === 'mens' ? 'text-mens-primary' : svc === 'womens' ? 'text-womens-primary' : svc === 'nails' ? 'text-nails-primary' : svc === 'makeup' ? 'text-makeup-primary' : 'text-primary';
+              const ring = svc === 'mens' ? 'ring-mens-primary/50' : svc === 'womens' ? 'ring-womens-primary/50' : svc === 'nails' ? 'ring-nails-primary/50' : svc === 'makeup' ? 'ring-makeup-primary/50' : 'ring-primary/40';
+              return (
+                <button aria-label="Bookings" className={`relative p-2 text-white rounded-full ring-1 ${ring}`} onClick={()=> navigate('/cart')}>
+                  <Icon className={`w-6 h-6 ${color}`} />
+                  {cartCount > 0 && <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">{cartCount}</span>}
+                </button>
+              );
+            })()}
             <button
               className="p-2 text-white"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
