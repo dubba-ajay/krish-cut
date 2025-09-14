@@ -47,7 +47,9 @@ export async function apiFetch(path: string, init?: RequestInit & { adminKey?: s
       const body = await readBody();
       const username = body?.username || '';
       const password = body?.password || '';
-      const roleRaw = username.toLowerCase().startsWith('testowner') ? 'OWNER' : username.toLowerCase().startsWith('testfreelancer') ? 'FREELANCER' : 'USER';
+      const handle = String(username || '').toLowerCase();
+      const local = (handle.includes('@') ? handle.split('@')[0] : handle);
+      const roleRaw = (local.startsWith('testowner') || local.startsWith('owner')) ? 'OWNER' : (local.startsWith('testfreelancer') || local.startsWith('freelancer')) ? 'FREELANCER' : 'USER';
       const role = roleRaw === 'OWNER' ? 'owner' : roleRaw === 'FREELANCER' ? 'freelancer' : 'customer';
       // naive password rules for mocked users
       const ok = (username && password && (password.toLowerCase().includes('pass') || password.toLowerCase().includes('owner') || password.toLowerCase().includes('freelancer')));
