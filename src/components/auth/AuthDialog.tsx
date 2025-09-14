@@ -56,7 +56,7 @@ export default function AuthDialog({ open, onOpenChange, mode = "login" as "logi
       navigate('/admin', { replace: true });
       return;
     }
-    // For regular users (customers), do not redirect away from current page ��� keep them on the homepage or wherever they are.
+    // For regular users (customers), do not redirect away from current page — keep them on the homepage or wherever they are.
     return;
   }
 
@@ -173,6 +173,9 @@ export default function AuthDialog({ open, onOpenChange, mode = "login" as "logi
           <div className="flex gap-2">
             <button onClick={()=>{ setUsePhone(true); setTab('login'); }} className={`flex-1 py-2 rounded ${usePhone ? 'bg-gray-200' : 'bg-transparent'}`}>Phone</button>
             <button onClick={()=>{ setUsePhone(false); setTab('login'); }} className={`flex-1 py-2 rounded ${!usePhone ? 'bg-gray-200' : 'bg-transparent'}`}>Username</button>
+          </div>
+          <div className="text-xs text-muted-foreground">
+            Tip: You can also enter an email for testing (owner@test.com, freelancer@test.com, user@test.com) with password "pass123".
           </div>
 
           {usePhone ? (
