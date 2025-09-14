@@ -19,6 +19,7 @@ export default function AuthDialog({ open, onOpenChange, mode = "login" as "logi
 
   // phone OTP states
   const [usePhone, setUsePhone] = useState(false); // default to username to prioritize credential login in design-only previews
+  const [useEmailMode, setUseEmailMode] = useState(false);
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
@@ -169,13 +170,14 @@ export default function AuthDialog({ open, onOpenChange, mode = "login" as "logi
           <DialogTitle>{tab === "login" ? "Login" : "Create account"}</DialogTitle>
         </DialogHeader>
         <div className="space-y-3">
-          {/* Toggle between phone (user) and username (owner/freelancer) login */}
+          {/* Toggle between phone, username, and email */}
           <div className="flex gap-2">
-            <button onClick={()=>{ setUsePhone(true); setTab('login'); }} className={`flex-1 py-2 rounded ${usePhone ? 'bg-gray-200' : 'bg-transparent'}`}>Phone</button>
-            <button onClick={()=>{ setUsePhone(false); setTab('login'); }} className={`flex-1 py-2 rounded ${!usePhone ? 'bg-gray-200' : 'bg-transparent'}`}>Username</button>
+            <button onClick={()=>{ setUsePhone(true); setUseEmailMode(false); setTab('login'); }} className={`flex-1 py-2 rounded ${usePhone ? 'bg-gray-200' : 'bg-transparent'}`}>Phone</button>
+            <button onClick={()=>{ setUsePhone(false); setUseEmailMode(false); setTab('login'); }} className={`flex-1 py-2 rounded ${!usePhone && !useEmailMode ? 'bg-gray-200' : 'bg-transparent'}`}>Username</button>
+            <button onClick={()=>{ setUsePhone(false); setUseEmailMode(true); setTab('login'); }} className={`flex-1 py-2 rounded ${!usePhone && useEmailMode ? 'bg-gray-200' : 'bg-transparent'}`}>Email</button>
           </div>
           <div className="text-xs text-muted-foreground">
-            Tip: You can also enter an email for testing (owner@test.com, freelancer@test.com, user@test.com) with password "pass123".
+            Tip: Testing emails supported (owner@test.com, freelancer@test.com, user@test.com) with password "pass123".
           </div>
 
           {usePhone ? (
@@ -220,8 +222,8 @@ export default function AuthDialog({ open, onOpenChange, mode = "login" as "logi
             // Username/password login for admin-provisioned accounts
             <>
               <div className="grid gap-2">
-                <Label>Username or Email</Label>
-                <Input value={email} onChange={e=>setEmail(e.target.value)} placeholder="username or you@example.com" />
+                <Label>{useEmailMode ? 'Email' : 'Username'}</Label>
+                <Input type={useEmailMode ? 'email' : 'text'} value={email} onChange={e=>setEmail(e.target.value)} placeholder={useEmailMode ? 'you@example.com' : 'username'} />
               </div>
               <div className="grid gap-2">
                 <Label>Password</Label>
@@ -229,7 +231,7 @@ export default function AuthDialog({ open, onOpenChange, mode = "login" as "logi
               </div>
               <div className="flex items-center gap-2">
                 <Button className="flex-1" onClick={onUsernameLogin} disabled={loading}>Login</Button>
-                <Button variant="ghost" onClick={()=>{ setUsePhone(true); setOtpSent(false); }}>{'Use phone'}</Button>
+                <Button variant="ghost" onClick={()=>{ setUsePhone(true); setUseEmailMode(false); setOtpSent(false); }}>{'Use phone'}</Button>
               </div>
             </>
           )}
