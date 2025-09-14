@@ -56,7 +56,7 @@ export default function AuthDialog({ open, onOpenChange, mode = "login" as "logi
       navigate('/admin', { replace: true });
       return;
     }
-    // For regular users (customers), do not redirect away from current page — keep them on the homepage or wherever they are.
+    // For regular users (customers), do not redirect away from current page ��� keep them on the homepage or wherever they are.
     return;
   }
 
@@ -217,8 +217,8 @@ export default function AuthDialog({ open, onOpenChange, mode = "login" as "logi
             // Username/password login for admin-provisioned accounts
             <>
               <div className="grid gap-2">
-                <Label>Username</Label>
-                <Input value={email} onChange={e=>setEmail(e.target.value)} placeholder="username" />
+                <Label>Username or Email</Label>
+                <Input value={email} onChange={e=>setEmail(e.target.value)} placeholder="username or you@example.com" />
               </div>
               <div className="grid gap-2">
                 <Label>Password</Label>
