@@ -91,9 +91,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const role = useMemo(() => {
-    // prefer session from supabase user metadata, otherwise from token payload stored separately
-    const supabaseRole = (user?.user_metadata?.role as AppRole | undefined) || null;
-    if (supabaseRole) return supabaseRole;
+    // Normalize role to our app roles
+    const toAppRole = (r: any): AppRole | null => {
+      if (!r) return null;
+      const v = String(r).toLowerCase();
+      if (v === 'owner') return 'owner';
+      if (v === 'freelancer') return 'freelancer';
+      if (v === 'admin') return 'admin';
+      if (v === 'user' || v === 'customer') return 'customer';
+      return null;
+    };
+
+    // prefer session from supabase user metadata, otherwise from user.role (credential login), otherwise from token payload
+    const metaRole = (user as any)?.user_metadata?.role;
+    const directRole = (user as any)?.role;
+    const fromMeta = toAppRole(metaRole);
+    if (fromMeta) return fromMeta;
+    const fromDirect = toAppRole(directRole);
+    if (fromDirect) return fromDirect;
+
     // try token
     if (token) {
       try {
@@ -102,8 +118,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
           const json = decodeURIComponent(Array.prototype.map.call(atob(base64), (c: string) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
           const body = JSON.parse(json);
-          const r = (body.role || null) as AppRole | null;
-          return r;
+          return toAppRole(body.role);
         }
       } catch (e) { /* ignore */ }
     }
