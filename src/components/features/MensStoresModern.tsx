@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { useLocation } from "@/contexts/LocationContext";
 import { Star, MapPin, Phone, Clock, Filter, Sparkles, ArrowRight } from "lucide-react";
 import { allStores } from "./AllStores";
 
@@ -25,6 +28,15 @@ export default function MensStoresModern({ category = "mens-hair" }: { category?
   const [query, setQuery] = useState("");
   const [price, setPrice] = useState<PriceTier>("all");
   const [sortBy, setSortBy] = useState<"rating" | "distance" | "price" | "reviews">("rating");
+  const { location, isLoading, requestLocation } = useLocation();
+  const [nearOnly, setNearOnly] = useState(false);
+
+  const parseDistance = (d: string) => {
+    const v = parseFloat(d);
+    if (Number.isNaN(v)) return Infinity;
+    return /mi/i.test(d) ? v * 1609.34 : v * 1000; // meters
+  };
+  const NEAR_THRESHOLD_METERS = 2000;
 
   const stores = useMemo(() => (category === "all" ? allStores : allStores.filter(s => s.category === category)), [category]);
 
@@ -45,10 +57,11 @@ export default function MensStoresModern({ category = "mens-hair" }: { category?
       s.specialties.some(sp => sp.toLowerCase().includes(q))
     );
     if (price !== "all") list = list.filter(s => s.priceRange === price);
+    if (nearOnly) list = list.filter(s => parseDistance(s.distance) <= NEAR_THRESHOLD_METERS);
     list.sort((a, b) => {
+      if (nearOnly || sortBy === "distance") return parseDistance(a.distance) - parseDistance(b.distance);
       switch (sortBy) {
         case "rating": return b.rating - a.rating;
-        case "distance": return parseFloat(a.distance) - parseFloat(b.distance);
         case "price": return a.priceRange.length - b.priceRange.length;
         case "reviews": return b.reviews - a.reviews;
         default: return 0;
@@ -62,7 +75,7 @@ export default function MensStoresModern({ category = "mens-hair" }: { category?
       <div className="container mx-auto px-4 lg:px-6">
         {/* Controls */}
         <div className="backdrop-blur bg-white/70 border rounded-2xl p-4 shadow-sm mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
             <div className="relative md:col-span-2">
               <Input
                 placeholder={labels[category].placeholder}
@@ -93,6 +106,17 @@ export default function MensStoresModern({ category = "mens-hair" }: { category?
                 ))}
               </SelectContent>
             </Select>
+            <div className="flex items-center justify-between md:justify-start gap-3 px-2">
+              <Switch id="near-only" checked={nearOnly} onCheckedChange={setNearOnly} />
+              <Label htmlFor="near-only" className="text-sm">Near me</Label>
+              {location?.city ? (
+                <span className="text-xs text-muted-foreground flex items-center"><MapPin className="w-3 h-3 mr-1" />{location.city}</span>
+              ) : (
+                <Button variant="outline" size="sm" onClick={requestLocation} disabled={isLoading}>
+                  {isLoading ? "Locating..." : "Use my location"}
+                </Button>
+              )}
+            </div>
           </div>
           <div className="mt-3 text-sm text-muted-foreground">
             Showing {filtered.length} {labels[category].unit}{filtered.length !== 1 ? "s" : ""}

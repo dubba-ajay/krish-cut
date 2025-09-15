@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, Calendar, User, Search, ShoppingCart } from "lucide-react";
+import { Menu, X, Calendar, User, Search, ShoppingCart, Scissors, Sparkles, Brush, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AuthDialog from "@/components/auth/AuthDialog";
 import { useAuth } from "@/contexts/AuthContext";
@@ -91,13 +91,27 @@ const Header = () => {
               <Search className="w-5 h-5" />
             </button>
 
-            {/* Booking cart button */}
-            <button aria-label="Bookings cart" className="relative p-2 rounded-full hover:bg-white/10 text-white ml-1" onClick={()=> navigate('/cart')}>
-              <ShoppingCart className="w-5 h-5" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">{cartCount}</span>
-              )}
-            </button>
+            {/* Booking cart button (keep cart + add service badge) */}
+          {(() => {
+            const path = location.pathname;
+            const svc = path.startsWith('/mens-hair') ? 'mens' : path.startsWith('/womens-beauty') ? 'womens' : path.startsWith('/nail-studios') ? 'nails' : path.startsWith('/makeup-artists') ? 'makeup' : 'default';
+            const ServiceIcon = svc === 'mens' ? Scissors : svc === 'womens' ? Sparkles : svc === 'nails' ? Brush : svc === 'makeup' ? Palette : null;
+            const ring = svc === 'mens' ? 'ring-mens-primary/50' : svc === 'womens' ? 'ring-womens-primary/50' : svc === 'nails' ? 'ring-nails-primary/50' : svc === 'makeup' ? 'ring-makeup-primary/50' : 'ring-primary/40';
+            const badgeBg = svc === 'mens' ? 'bg-mens-primary' : svc === 'womens' ? 'bg-womens-primary' : svc === 'nails' ? 'bg-nails-primary' : svc === 'makeup' ? 'bg-makeup-primary' : 'bg-primary';
+            return (
+              <button aria-label="Bookings" className={`relative p-2 rounded-full hover:bg-white/10 text-white ml-1 ring-1 ${ring}`} onClick={()=> navigate('/cart')}>
+                <ShoppingCart className="w-5 h-5 text-white" />
+                {ServiceIcon && (
+                  <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center ${badgeBg} ring-2 ring-[#1E293B]`}>
+                    <ServiceIcon className="w-3 h-3 text-white" />
+                  </span>
+                )}
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">{cartCount}</span>
+                )}
+              </button>
+            );
+          })()}
 
 
                     {!isAuthenticated ? (
@@ -138,10 +152,24 @@ const Header = () => {
             <button aria-label="Search" className="p-2 text-white" onClick={()=> setSearchOpen(true)}>
               <Search className="w-6 h-6" />
             </button>
-            <button aria-label="Bookings cart" className="relative p-2 text-white" onClick={()=> navigate('/checkout')}>
-              <ShoppingCart className="w-6 h-6" />
-              {cartCount > 0 && <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">{cartCount}</span>}
-            </button>
+            {(() => {
+              const path = location.pathname;
+              const svc = path.startsWith('/mens-hair') ? 'mens' : path.startsWith('/womens-beauty') ? 'womens' : path.startsWith('/nail-studios') ? 'nails' : path.startsWith('/makeup-artists') ? 'makeup' : 'default';
+              const ServiceIcon = svc === 'mens' ? Scissors : svc === 'womens' ? Sparkles : svc === 'nails' ? Brush : svc === 'makeup' ? Palette : null;
+              const ring = svc === 'mens' ? 'ring-mens-primary/50' : svc === 'womens' ? 'ring-womens-primary/50' : svc === 'nails' ? 'ring-nails-primary/50' : svc === 'makeup' ? 'ring-makeup-primary/50' : 'ring-primary/40';
+              const badgeBg = svc === 'mens' ? 'bg-mens-primary' : svc === 'womens' ? 'bg-womens-primary' : svc === 'nails' ? 'bg-nails-primary' : svc === 'makeup' ? 'bg-makeup-primary' : 'bg-primary';
+              return (
+                <button aria-label="Bookings" className={`relative p-2 text-white rounded-full ring-1 ${ring}`} onClick={()=> navigate('/cart')}>
+                  <ShoppingCart className="w-6 h-6 text-white" />
+                  {ServiceIcon && (
+                    <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center ${badgeBg} ring-2 ring-[#1E293B]`}>
+                      <ServiceIcon className="w-3 h-3 text-white" />
+                    </span>
+                  )}
+                  {cartCount > 0 && <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">{cartCount}</span>}
+                </button>
+              );
+            })()}
             <button
               className="p-2 text-white"
               onClick={() => setIsMenuOpen(!isMenuOpen)}

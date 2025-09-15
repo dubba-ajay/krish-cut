@@ -47,11 +47,21 @@ export async function apiFetch(path: string, init?: RequestInit & { adminKey?: s
       const body = await readBody();
       const username = body?.username || '';
       const password = body?.password || '';
-      const role = username.toLowerCase().startsWith('testowner') ? 'OWNER' : username.toLowerCase().startsWith('testfreelancer') ? 'FREELANCER' : 'USER';
+      const handle = String(username || '').toLowerCase();
+      const local = (handle.includes('@') ? handle.split('@')[0] : handle);
+      const roleRaw = (local.startsWith('testowner') || local.startsWith('owner')) ? 'OWNER' : (local.startsWith('testfreelancer') || local.startsWith('freelancer')) ? 'FREELANCER' : 'USER';
+      const role = roleRaw === 'OWNER' ? 'owner' : roleRaw === 'FREELANCER' ? 'freelancer' : 'customer';
       // naive password rules for mocked users
       const ok = (username && password && (password.toLowerCase().includes('pass') || password.toLowerCase().includes('owner') || password.toLowerCase().includes('freelancer')));
       if (!ok) return build(401, { error: 'invalid credentials' });
-      const token = `mock-token-${username}`;
+      // build a JWT-like token so downstream decoding works
+      const b64url = (obj: any) => {
+        const json = typeof obj === 'string' ? obj : JSON.stringify(obj);
+        return btoa(unescape(encodeURIComponent(json))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+      };
+      const header = { alg: 'HS256', typ: 'JWT' };
+      const payload = { id: `mock_${username}` , role };
+      const token = `${b64url(header)}.${b64url(payload)}.dev`;
       return build(200, { ok: true, role, mustReset: false, token, userId: `mock_${username}` });
     }
 

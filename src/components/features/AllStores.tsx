@@ -190,6 +190,146 @@ export const allStores = [
     description: "Creative makeup artistry and beauty transformations for fashion and events",
     isVerified: true
   }
+,
+  // Additional Men's Hair Stores
+  {
+    id: 104,
+    name: "Urban Fade Lab",
+    category: "mens-hair",
+    rating: 4.6,
+    reviews: 156,
+    distance: "1.0 mi",
+    address: "12 Market Road, Riverside",
+    phone: "(555) 444-5566",
+    image: salon1,
+    priceRange: "₹₹",
+    openHours: "9:00 AM - 8:30 PM",
+    specialties: ["Skin Fades", "Beard Trim", "Line Ups"],
+    description: "Contemporary barbers with precision fades and beard craftsmanship",
+    isVerified: true
+  },
+  {
+    id: 105,
+    name: "King's Cut Lounge",
+    category: "mens-hair",
+    rating: 4.8,
+    reviews: 278,
+    distance: "2.4 mi",
+    address: "88 Regent Circle, Midtown",
+    phone: "(555) 777-8899",
+    image: salon2,
+    priceRange: "₹₹₹",
+    openHours: "10:00 AM - 9:30 PM",
+    specialties: ["Hot Towel Shave", "Classic Pompadour", "Head Massage"],
+    description: "Premium lounge experience with classic and modern styling",
+    isVerified: true,
+    isTopRated: true
+  },
+
+  // Additional Women's Beauty Stores
+  {
+    id: 204,
+    name: "Radiance Salon & Spa",
+    category: "womens-beauty",
+    rating: 4.7,
+    reviews: 198,
+    distance: "2.0 km",
+    address: "21 Blossom Lane, Garden District",
+    phone: "(555) 444-6677",
+    image: salon3,
+    priceRange: "₹₹",
+    openHours: "9:30 AM - 8:30 PM",
+    specialties: ["Spa Facials", "Keratin", "Waxing", "Threading"],
+    description: "Relaxing full-service salon with expert stylists and estheticians",
+    isVerified: true
+  },
+  {
+    id: 205,
+    name: "Blossom Beauty Bar",
+    category: "womens-beauty",
+    rating: 4.8,
+    reviews: 264,
+    distance: "3.1 km",
+    address: "9 Pearl Street, Uptown",
+    phone: "(555) 555-1212",
+    image: womensHero,
+    priceRange: "₹₹₹",
+    openHours: "10:00 AM - 9:00 PM",
+    specialties: ["Balayage", "Makeovers", "Nail Spa", "Bridal Packages"],
+    description: "Modern beauty bar specializing in color and premium treatments",
+    isVerified: true,
+    isTopRated: true
+  },
+
+  // Additional Nail Studios
+  {
+    id: 303,
+    name: "Chrome & Co.",
+    category: "nail-studios",
+    rating: 4.7,
+    reviews: 172,
+    distance: "0.9 km",
+    address: "66 Varnish Ave, Arts District",
+    phone: "(555) 999-1010",
+    image: salon1,
+    priceRange: "₹₹",
+    openHours: "10:00 AM - 8:00 PM",
+    specialties: ["Chrome Nails", "BIAB", "French Tips"],
+    description: "Trendy nail studio with on-point designs and durable finishes",
+    isVerified: true
+  },
+  {
+    id: 304,
+    name: "Cuticle Collective",
+    category: "nail-studios",
+    rating: 4.8,
+    reviews: 221,
+    distance: "1.8 km",
+    address: "41 Cutler Row, Central Parkside",
+    phone: "(555) 909-1212",
+    image: nailsHero,
+    priceRange: "₹₹₹",
+    openHours: "9:30 AM - 9:00 PM",
+    specialties: ["Spa Pedicure", "Acrylic Sculpting", "Nail Art"],
+    description: "Elevated nail care and spa pedicures with meticulous hygiene",
+    isVerified: true,
+    isTopRated: true
+  },
+
+  // Additional Makeup Artists
+  {
+    id: 403,
+    name: "Contour Collective",
+    category: "makeup-artists",
+    rating: 4.7,
+    reviews: 183,
+    distance: "1.1 km",
+    address: "27 Studio Walk, Fashion Mile",
+    phone: "(555) 606-7070",
+    image: salon2,
+    priceRange: "₹₹",
+    openHours: "8:00 AM - 9:00 PM",
+    specialties: ["HD Makeup", "Photoshoot", "Editorial"],
+    description: "On-trend artistry for shoots, events, and editorial looks",
+    isVerified: true
+  },
+  {
+    id: 404,
+    name: "Starlight MUA Studio",
+    category: "makeup-artists",
+    rating: 4.9,
+    reviews: 327,
+    distance: "2.6 km",
+    address: "5 Orion Place, Skyline Tower",
+    phone: "(555) 313-4141",
+    image: makeupHero,
+    priceRange: "₹₹₹",
+    openHours: "7:30 AM - 10:00 PM",
+    specialties: ["Bridal HD", "Airbrush", "Sangeet & Reception"],
+    description: "Celebrity-grade makeup studio specializing in bridal and airbrush",
+    isVerified: true,
+    isTopRated: true
+  }
 ];
 
 interface AllStoresProps {

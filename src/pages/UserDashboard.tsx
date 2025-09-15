@@ -15,10 +15,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Calendar } from "@/components/ui/calendar";
-import { Pencil, Wallet as WalletIcon, IndianRupee, CreditCard } from "lucide-react";
+import { Pencil, Wallet as WalletIcon, IndianRupee, CreditCard, CalendarDays, Heart, Crown, Settings, HelpCircle, MessageSquare } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { getSupabase, hasSupabaseEnv } from "@/lib/supabase";
+import { useBreakpoint } from "@/hooks/use-breakpoint";
 import { useLocation } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { getMyBookings, cancelSlot, BookingRecord, bookSlot, listBookedSlots } from "@/lib/availability";
@@ -59,6 +60,10 @@ const UserDashboard = () => {
   const [settings, setSettings] = useLocalStorage("settings", { reminders: true, promos: false, receipts: true, language: "en", region: "IN", theme: (localStorage.getItem("theme") || "light") });
 
   const refresh = () => setBookings(getMyBookings());
+  const { device } = useBreakpoint();
+  const isPhone = device === 'phone';
+  const isTablet = device === 'tablet';
+  const isDesktop = device === 'desktop';
   const today = new Date();
   const todays = useMemo(() => bookings.filter(b => new Date(b.date).toDateString() === today.toDateString()), [bookings]);
   const upcoming = useMemo(() => bookings.filter(b => new Date(b.date) >= today), [bookings]);
@@ -130,9 +135,9 @@ const UserDashboard = () => {
   return (
     <div className="min-h-screen flex flex-col bg-[#F9FAFB] text-[#111827]">
       <Header />
-      <main className="pt-16 container mx-auto px-4 lg:px-6 py-8 space-y-6">
+      <main className={`pt-16 container mx-auto ${isPhone ? 'px-3 py-4 space-y-4' : isTablet ? 'px-4 py-6 space-y-5' : 'px-6 py-8 space-y-6'}`}>
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Your Dashboard</h1>
+          <h1 className={`${isPhone ? 'text-2xl' : isTablet ? 'text-3xl' : 'text-4xl'} font-bold`}>Your Dashboard</h1>
           <div className="flex items-center gap-3">
             <Avatar className="ring-2 ring-[#EAB308] shadow-[0_0_0_3px_rgba(234,179,8,0.25)]"><AvatarFallback>{(user?.email?.[0] || profile.displayName?.[0] || "U").toUpperCase()}</AvatarFallback></Avatar>
             <div className="text-sm text-muted-foreground">{profile.displayName || user?.email}</div>
@@ -150,46 +155,29 @@ const UserDashboard = () => {
                 </div>
                 <Button onClick={() => setEditOpen(true)} className="rounded-xl bg-gradient-to-r from-[#EAB308] to-[#1E293B] hover:from-[#f3c336] hover:to-[#0b1625] text-white shadow-md"><Pencil className="w-4 h-4 mr-2"/>Edit Profile</Button>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
-                <button onClick={() => setTab("bookings")} className="p-3 border rounded hover:bg-accent text-left">My Appointments</button>
-                <button onClick={() => setTab("favorites")} className="p-3 border rounded hover:bg-accent text-left">Favorites</button>
-                <button onClick={() => setTab("payments")} className="p-3 border rounded hover:bg-accent text-left">Payments & Wallet</button>
-                <button onClick={() => setTab("memberships")} className="p-3 border rounded hover:bg-accent text-left">Memberships</button>
-                <button onClick={() => setTab("settings")} className="p-3 border rounded hover:bg-accent text-left">Settings</button>
-                <button onClick={() => setTab("help")} className="p-3 border rounded hover:bg-accent text-left">Help & Support</button>
-                <button onClick={() => setTab("feedback")} className="p-3 border rounded hover:bg-accent text-left col-span-2">Feedback / Rate App</button>
+              <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3">
+                {[
+                  { key:'bookings', label:'Appointments', icon: CalendarDays },
+                  { key:'favorites', label:'Favorites', icon: Heart },
+                  { key:'payments', label:'Wallet', icon: WalletIcon },
+                  { key:'memberships', label:'Memberships', icon: Crown },
+                  { key:'settings', label:'Settings', icon: Settings },
+                  { key:'help', label:'Help & Support', icon: HelpCircle },
+                  { key:'feedback', label:'Feedback', icon: MessageSquare },
+                ].map(a => (
+                  <button key={a.key} onClick={() => setTab(a.key)} className="group p-3 sm:p-4 rounded-xl border bg-white hover:shadow-md transition-all text-left flex items-center gap-3">
+                    <span className="p-2 rounded-lg bg-gradient-to-br from-purple-50 to-pink-50 text-[#6D28D9] group-hover:scale-105 transition"><a.icon className="w-5 h-5" /></span>
+                    <span className="text-sm font-medium">{a.label}</span>
+                  </button>
+                ))}
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Quick upcoming booking summary */}
-        <Card className="rounded-2xl border-0 bg-white">
-          <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">Your next booking</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {nextBooking ? (
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="font-semibold text-lg">{nextBooking.salonName}</div>
-                  <div className="text-sm text-muted-foreground">{Array.isArray(nextBooking.services) ? nextBooking.services.join(', ') : String(nextBooking.services)}</div>
-                  <div className="text-sm text-muted-foreground mt-1">{format(new Date(nextBooking.date))} • {nextBooking.time}</div>
-                  <div className="text-sm text-muted-foreground mt-1">Location: {nextBooking.location === 'home' ? 'Home' : 'Salon'}</div>
-                </div>
-                <div className="flex flex-col items-end gap-2">
-                  <Button size="sm" variant="outline" onClick={() => setTab('bookings')}>View bookings</Button>
-                  <Button size="sm" variant="destructive" onClick={async () => { await cancelSlot(nextBooking.id); refresh(); }}>Cancel</Button>
-                </div>
-              </div>
-            ) : (
-              <div className="text-sm text-muted-foreground">You have no upcoming bookings.</div>
-            )}
-          </CardContent>
-        </Card>
 
         <Tabs value={tab} onValueChange={setTab}>
-          <TabsList className="flex flex-wrap gap-2 bg-transparent p-0">
+          <TabsList className="hidden md:flex flex-wrap gap-2 bg-transparent p-0 md:sticky md:top-16 z-10 md:bg-[#F9FAFB]/70 backdrop-blur-sm rounded-xl px-2 py-1">
             <TabsTrigger value="bookings" className="rounded-full px-4 py-2 bg-gray-100 text-[#0F172A] data-[state=active]:bg-[#EAB308] data-[state=active]:text-white shadow-sm">Appointments</TabsTrigger>
             <TabsTrigger value="favorites" className="rounded-full px-4 py-2 bg-gray-100 text-[#0F172A] data-[state=active]:bg-[#EAB308] data-[state=active]:text-white shadow-sm">Favorites</TabsTrigger>
             <TabsTrigger value="payments" className="rounded-full px-4 py-2 bg-gray-100 text-[#0F172A] data-[state=active]:bg-[#EAB308] data-[state=active]:text-white shadow-sm">Payments & Wallet</TabsTrigger>
