@@ -177,7 +177,7 @@ const UserDashboard = () => {
 
 
         <Tabs value={tab} onValueChange={setTab}>
-          <TabsList className="flex flex-wrap gap-2 bg-transparent p-0">
+          <TabsList className="hidden md:flex flex-wrap gap-2 bg-transparent p-0 md:sticky md:top-16 z-10 md:bg-[#F9FAFB]/70 backdrop-blur-sm rounded-xl px-2 py-1">
             <TabsTrigger value="bookings" className="rounded-full px-4 py-2 bg-gray-100 text-[#0F172A] data-[state=active]:bg-[#EAB308] data-[state=active]:text-white shadow-sm">Appointments</TabsTrigger>
             <TabsTrigger value="favorites" className="rounded-full px-4 py-2 bg-gray-100 text-[#0F172A] data-[state=active]:bg-[#EAB308] data-[state=active]:text-white shadow-sm">Favorites</TabsTrigger>
             <TabsTrigger value="payments" className="rounded-full px-4 py-2 bg-gray-100 text-[#0F172A] data-[state=active]:bg-[#EAB308] data-[state=active]:text-white shadow-sm">Payments & Wallet</TabsTrigger>
